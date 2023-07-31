@@ -6,7 +6,7 @@ import static java.lang.System.out;
 import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 
-import com.andersen.models.ParsedCommand;
+import com.andersen.models.ParsedInput;
 import com.andersen.utils.CommandUtils;
 
 public class App {
@@ -25,7 +25,7 @@ public class App {
             out.print(">>> ");
             try {
 
-                ParsedCommand parsedCommand = CommandUtils.parseInput(scanner.nextLine());
+                ParsedInput parsedCommand = CommandUtils.parseInput(scanner.nextLine());
 
             } catch (Exception e) {
                 out.println(e.getMessage());

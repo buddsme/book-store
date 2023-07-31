@@ -1,6 +1,6 @@
 package com.andersen.enums.actions;
 
-public enum BookAction implements EntityAction {
+public enum BookAction implements CommandAction {
     
     LIST("list", 1),
     ADD("add", 2);

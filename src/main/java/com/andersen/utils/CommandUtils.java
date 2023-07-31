@@ -5,43 +5,39 @@ import static java.lang.String.format;
 import java.util.Arrays;
 import java.util.stream.IntStream;
 
-import com.andersen.enums.AppEntity;
-import com.andersen.enums.actions.EntityAction;
-import com.andersen.models.ParsedCommand;
+import com.andersen.enums.AppCommand;
+import com.andersen.enums.actions.CommandAction;
+import com.andersen.models.ParsedInput;
 
 public class CommandUtils {
 
-    public static ParsedCommand parseInput(String input) {
+    public static ParsedInput parseInput(String input) {
         String[] inputElements = input.split(" ");
 
-        if (inputElements.length < 2) throw new IllegalStateException("Too few input elements, expected at least 2");
+        if (inputElements.length < 1) throw new IllegalArgumentException("Too few input elements, expected at least 1");
 
         IntStream.range(0, inputElements.length).forEach(i -> inputElements[i] = inputElements[i].trim());
 
-        String entity = inputElements[0];
-        String action = inputElements[1];
-
-        AppEntity parsedEntity = Arrays.stream(AppEntity.values())
-                .filter(item -> item.getStrValue().equals(entity))
+        String command = inputElements[0];
+        AppCommand parsedCommand = Arrays.stream(AppCommand.values())
+                .filter(item -> item.getStrValue().equals(command))
                 .findFirst()
-                .orElseThrow(() -> new IllegalStateException(format("Unknown entity '%s'", entity)));
+                .orElseThrow(() -> new IllegalArgumentException(format("Unknown command '%s'", command)));
 
-        EntityAction parsedAction = parsedEntity.getActions().stream()
+        if (!parsedCommand.isActionable()) return new ParsedInput(parsedCommand);
+
+        String action = inputElements[1];
+        CommandAction parsedAction = parsedCommand.getActions().stream()
                 .filter(item -> item.getStrValue().equals(action))
                 .findFirst()
-                .orElseThrow(() -> new IllegalStateException(format("Unknown action '%s' for entity '%s'", action, entity)));
+                .orElseThrow(() -> new IllegalArgumentException(format("Unknown action '%s' for command '%s'", action, command)));
 
         String[] parsedArgs = Arrays.copyOfRange(inputElements, 2, inputElements.length);
 
-        if (parsedAction.getArgsAmount() != parsedArgs.length) throw new IllegalStateException(
-            format("Invalid args amount '%s' for for entity '%s', action '%s'", parsedArgs.length, entity, action)
+        if (parsedAction.getArgsAmount() != parsedArgs.length) throw new IllegalArgumentException(
+            format("Invalid args amount '%s' for for command '%s', action '%s'", parsedArgs.length, command, action)
         );
 
-        ParsedCommand parsedCommand = new ParsedCommand();
-        parsedCommand.setEntity(parsedEntity);
-        parsedCommand.setAction(parsedAction);
-        parsedCommand.setArgs(parsedArgs);
-
-        return parsedCommand;
+        return new ParsedInput(parsedCommand, parsedAction, parsedArgs);
     }
 }

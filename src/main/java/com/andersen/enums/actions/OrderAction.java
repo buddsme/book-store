@@ -1,6 +1,6 @@
 package com.andersen.enums.actions;
 
-public enum OrderAction implements EntityAction {
+public enum OrderAction implements CommandAction {
     
     LIST("list", 2),
     COMPLETE("complete", 1),

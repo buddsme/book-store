@@ -1,6 +1,6 @@
 package com.andersen.enums.actions;
 
-public interface EntityAction {
+public interface CommandAction {
     
     String getStrValue();
     int getArgsAmount();

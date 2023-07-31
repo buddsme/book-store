@@ -1,6 +1,6 @@
 package com.andersen.enums.actions;
 
-public enum RequestAction implements EntityAction {
+public enum RequestAction implements CommandAction {
     
     LIST("list", 1);
 
